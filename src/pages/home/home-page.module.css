@@ -1,0 +1,95 @@
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-inline: clamp(1.5rem, 7vw, 7rem);
+  background:
+    radial-gradient(ellipse at 90% 40%, #a3e6350d, transparent 60%), var(--color-background);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  stroke: var(--color-accent);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.label {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding-block: clamp(4rem, 12vh, 9rem);
+}
+
+.main h1 {
+  font-size: clamp(2.5rem, 6.5vw, 6rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  margin-block: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  max-width: 32rem;
+  color: var(--color-muted);
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-block: 0 2.5rem;
+}
+
+.notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: 2rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+}
+
+.dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
