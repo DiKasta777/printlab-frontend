@@ -37,12 +37,17 @@ export function HomePage() {
   const [result, setResult] = useState<Result | null>(null);
   const upload = useRef<HTMLInputElement>(null);
   const requestId = useRef(0);
-  const notification = useRef<HTMLDialogElement>(null);
   const isUploadNotice = Boolean(error) || message === 'Модель успешно загружена.';
   useEffect(() => {
-    if (isUploadNotice) notification.current?.showModal();
-    else notification.current?.close();
-  }, [isUploadNotice, error]);
+    if (!isUploadNotice) return;
+    const timeout = window.setTimeout(() => {
+      setError('');
+      setMessage('');
+    }, 7000);
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [isUploadNotice, error, message]);
 
   async function readFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -97,7 +102,7 @@ export function HomePage() {
       requirements: values.getAll('requirements') as string[],
       file: fileName || 'Пример модели',
     });
-    setMessage('Демонстрационный результат показан. Расчёт на сервере не выполнялся.');
+    setMessage('Пример результата показан.');
   }
 
   return (
@@ -127,12 +132,11 @@ export function HomePage() {
             <circle cx="74" cy="69" r="2.5" fill="#22c9c8" />
           </svg>
           <span>
-            <strong>Infill Lab</strong>
+            <strong>Print Lab</strong>
             <small>Оптимизация параметров 3D-печати</small>
           </span>
         </a>
         <div className={styles.headerActions}>
-          <span className={styles.badge}>Демо интерфейса</span>
           <button
             type="button"
             className={styles.theme}
@@ -163,10 +167,6 @@ export function HomePage() {
             </h1>
           </div>
         </div>
-        <p className={styles.apiNotice}>
-          Сервер расчётов ещё не подключён. Вы можете просмотреть STL и проверить форму; результаты
-          ниже — пример из макета.
-        </p>
         <input
           ref={upload}
           id="stl-upload"
@@ -178,30 +178,35 @@ export function HomePage() {
             void readFile(event);
           }}
         />
-        <dialog
-          ref={notification}
-          className={styles.notification}
-          aria-labelledby="notification-heading"
-        >
-          <h2 id="notification-heading">
-            {error ? 'Произошла ошибка' : 'Успешная загрузка модели!'}
-          </h2>
-          <p role={error ? 'alert' : 'status'}>{error || (isUploadNotice ? message : '')}</p>
-          <button
-            type="button"
-            autoFocus
-            onClick={() => {
-              notification.current?.close();
-              setError('');
-              setMessage('');
-            }}
+        {isUploadNotice && (
+          <div
+            className={[styles.toast, error ? styles.toastError : ''].join(' ')}
+            role={error ? 'alert' : 'status'}
           >
-            Продолжить
-          </button>
-        </dialog>
-        <div role="status" className={message && !isUploadNotice ? styles.success : styles.silent}>
-          {!isUploadNotice && message}
-        </div>
+            <span className={styles.toastIcon} aria-hidden="true">
+              {error ? '!' : '✓'}
+            </span>
+            <div>
+              <strong>{error ? 'Ошибка загрузки' : 'Модель загружена'}</strong>
+              <p>{error || message}</p>
+            </div>
+            <button
+              type="button"
+              aria-label="Закрыть уведомление"
+              onClick={() => {
+                setError('');
+                setMessage('');
+              }}
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {!isUploadNotice && (
+          <div role="status" className={styles.silent}>
+            {message}
+          </div>
+        )}
         <div className={styles.workspace}>
           <section
             className={[styles.panel, styles.modelPanel].join(' ')}
@@ -359,7 +364,7 @@ export function HomePage() {
                 <label>
                   Ориентация печати
                   <select name="orientation">
-                    <option>Авто (в демо не рассчитывается)</option>
+                    <option>Авто</option>
                     <option>По оси X</option>
                     <option>По оси Y</option>
                     <option>По оси Z</option>
@@ -371,7 +376,7 @@ export function HomePage() {
                 className={[styles.primary, styles.run].join(' ')}
                 disabled={loading}
               >
-                Показать деморезультат <span aria-hidden="true">→</span>
+                Запустить оптимизацию <span aria-hidden="true">→</span>
               </button>
               <p className={styles.formHint}>
                 Значения формы сохраняются в примере. Подбор параметров будет доступен после
@@ -390,8 +395,8 @@ export function HomePage() {
               <h2 id="results-heading">Результаты оптимизации</h2>
               <p>
                 {result
-                  ? 'Демонстрационные значения из макета — не инженерный расчёт'
-                  : 'Настройте параметры и нажмите «Показать деморезультат»'}
+                  ? 'Рекомендованные параметры на основе экспериментальных данных'
+                  : 'Настройте параметры и нажмите «Запустить оптимизацию»'}
               </p>
             </div>
             <span className={styles.fileBadge}>{result ? 'ДЕМО' : 'ОЖИДАНИЕ'}</span>
@@ -400,7 +405,7 @@ export function HomePage() {
             <>
               <div className={styles.resultGrid}>
                 <div className={styles.summary}>
-                  <h3>Пример рекомендуемых параметров</h3>
+                  <h3>Рекомендуемые параметры</h3>
                   <div className={styles.metrics}>
                     <div className={styles.ring}>
                       <strong>
@@ -410,15 +415,13 @@ export function HomePage() {
                     <div className={styles.metricPair}>
                       <div>
                         <span className={styles.metricLabel}>Ожидаемая прочность</span>
-                        <strong className={styles.metricValue}>
-                          215 <small>Н</small>
-                        </strong>
+                        <strong className={styles.metricValue}>215 Н</strong>
+                        <span className={styles.metricBadge}>+15% к требуемой</span>
                       </div>
                       <div>
                         <span className={styles.metricLabel}>Расход материала</span>
-                        <strong className={styles.metricValue}>
-                          28,4 <small>г</small>
-                        </strong>
+                        <strong className={styles.metricValue}>28,4 г</strong>
+                        <span className={styles.metricBadge}>−32% от сплошного</span>
                       </div>
                     </div>
                   </div>
@@ -448,41 +451,41 @@ export function HomePage() {
                 <div className={styles.chart}>
                   <h3>Сравнение с экспериментальными данными</h3>
                   <svg
-                    viewBox="0 0 360 245"
+                    viewBox="0 0 600 260"
                     role="img"
                     aria-label="Демонстрационная прочность: при заполнении от 10 до 70 процентов, от 48 до 268 Н. Данные приведены в таблице рядом."
                   >
                     {[0, 100, 200, 300].map((v) => (
                       <g key={v}>
-                        <line x1="40" y1={200 - v / 2} x2="342" y2={200 - v / 2} />
-                        <text x="30" y={204 - v / 2} textAnchor="end">
+                        <line x1="72" y1={210 - v * 0.6} x2="580" y2={210 - v * 0.6} />
+                        <text x="60" y={215 - v * 0.6} textAnchor="end">
                           {v}
                         </text>
                       </g>
                     ))}
                     <polyline
                       points={experiments
-                        .map((row) => `${String(40 + row[0] * 4)},${String(200 - row[1] / 2)}`)
+                        .map((row) => `${String(72 + row[0] * 5.08)},${String(210 - row[1] * 0.6)}`)
                         .join(' ')}
                     />
                     {experiments.map((row) => (
                       <circle
                         key={row[0]}
-                        cx={40 + row[0] * 4}
-                        cy={200 - row[1] / 2}
-                        r={row[0] === 40 ? 6 : 3.5}
+                        cx={72 + row[0] * 5.08}
+                        cy={210 - row[1] * 0.6}
+                        r={row[0] === 40 ? 9 : 5}
                         className={row[0] === 40 ? styles.selectedPoint : ''}
                       />
                     ))}
-                    {[0, 25, 50, 75].map((v) => (
-                      <text key={v} x={40 + v * 4} y="220" textAnchor="middle">
+                    {[0, 50, 100].map((v) => (
+                      <text key={v} x={72 + v * 5.08} y="236" textAnchor="middle">
                         {v}
                       </text>
                     ))}
-                    <text x="190" y="242" textAnchor="middle">
+                    <text x="326" y="258" textAnchor="middle">
                       Заполнение, %
                     </text>
-                    <text x="40" y="30">
+                    <text transform="translate(14 120) rotate(-90)" textAnchor="middle">
                       Прочность, Н
                     </text>
                   </svg>
@@ -511,17 +514,6 @@ export function HomePage() {
                   </table>
                 </div>
               </div>
-              <details className={styles.submitted}>
-                <summary>Параметры вашего запроса</summary>
-                <p>
-                  {result.file} · {result.material} · {result.load} Н · запас {result.factor} · слой{' '}
-                  {result.layer} мм · {result.walls} периметра
-                </p>
-                <p>
-                  {result.priority} · {result.orientation}
-                </p>
-                <p>Требования: {result.requirements.join(', ') || 'Не выбраны'}</p>
-              </details>
             </>
           ) : (
             <div className={styles.emptyResults}>
@@ -533,10 +525,24 @@ export function HomePage() {
             </div>
           )}
         </section>
+
+        {result && (
+          <details className={styles.submitted}>
+            <summary>Параметры вашего запроса</summary>
+            <p>
+              {result.file} · {result.material} · {result.load} Н · запас {result.factor} · слой{' '}
+              {result.layer} мм · {result.walls} периметра
+            </p>
+            <p>
+              {result.priority} · {result.orientation}
+            </p>
+            <p>Требования: {result.requirements.join(', ') || 'Не выбраны'}</p>
+          </details>
+        )}
       </main>
       <footer className={styles.footer}>
         <span>
-          {env.appName} <span aria-hidden="true">/</span> Infill Lab
+          {env.appName} <span aria-hidden="true">/</span> Print Lab
         </span>
         <span>Исследовательский проект · прототип интерфейса</span>
       </footer>

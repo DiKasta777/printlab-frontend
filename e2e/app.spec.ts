@@ -9,7 +9,7 @@ test('production-сборка открывает PrintLab без ошибок Ja
 
   await expect(page).toHaveTitle('PrintLab');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Меньше материала.');
-  await expect(page.getByText(/Сервер расчётов ещё не подключён/)).toBeVisible();
+  await expect(page.getByText('Здесь появится результат')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
@@ -33,7 +33,7 @@ test('прямая ссылка на неизвестный маршрут от�
 test('деморезультат, смена темы и проверка формы', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Материал', { exact: true }).selectOption('PETG');
-  await page.getByRole('button', { name: 'Показать деморезультат' }).click();
+  await page.getByRole('button', { name: 'Запустить оптимизацию' }).click();
   await expect(page.getByRole('table')).toBeVisible();
   await page.getByText('Параметры вашего запроса').click();
   await expect(page.getByText(/PETG · 100 Н/)).toBeVisible();
@@ -45,7 +45,7 @@ test('деморезультат, смена темы и проверка фор
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.getByLabel('Максимальная нагрузка, Н').fill('-10');
   await expect(page.getByRole('table')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Показать деморезультат' }).click();
+  await page.getByRole('button', { name: 'Запустить оптимизацию' }).click();
   await expect(page.getByRole('table')).toHaveCount(0);
 });
 
@@ -61,9 +61,9 @@ test('загрузка STL и обработка повреждённого фа
   });
   await expect(page.getByText('triangle.stl', { exact: true })).toBeVisible();
   await expect(page.getByRole('status')).toContainText('успешно');
-  await page.getByRole('button', { name: 'Продолжить' }).click();
+  await page.getByRole('button', { name: 'Закрыть уведомление' }).click();
   await page.getByRole('button', { name: 'Удалить' }).click();
-  await expect(page.getByText('Модель ещё не загружена')).toBeVisible();
+  await expect(page.getByText('МОДЕЛЬ', { exact: true })).toBeVisible();
   await upload.setInputFiles({
     name: 'broken.stl',
     mimeType: 'application/octet-stream',

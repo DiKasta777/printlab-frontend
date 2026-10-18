@@ -13,8 +13,8 @@ describe('Маршруты приложения', () => {
     );
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Меньше материала.');
-    expect(screen.getByRole('link', { name: /Infill Lab/ })).toHaveAttribute('href', '/');
-    expect(screen.getByText('Демо интерфейса')).toBeVisible();
+    expect(screen.getByRole('link', { name: /Print Lab/ })).toHaveAttribute('href', '/');
+    expect(screen.getByText('Здесь появится результат')).toBeVisible();
   });
 
   it('показывает 404 для неизвестного адреса и позволяет вернуться домой', async () => {

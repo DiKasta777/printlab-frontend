@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { HomePage } from './home-page';
@@ -37,14 +37,14 @@ describe('Рабочий экран', () => {
     const user = userEvent.setup();
     render(<HomePage />);
     await user.selectOptions(screen.getByLabelText('Материал'), 'PETG');
-    await user.click(screen.getByRole('button', { name: /Показать деморезультат/ }));
+    await user.click(screen.getByRole('button', { name: /Запустить оптимизацию/ }));
     expect(screen.getByRole('table')).toBeVisible();
     await user.click(screen.getByText('Параметры вашего запроса'));
     expect(screen.getByText(/PETG · 100 Н/)).toBeVisible();
     expect(screen.getByText(/Фиксированный пример/)).toBeVisible();
     await user.click(screen.getByLabelText('Минимальный вес'));
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: /Показать деморезультат/ }));
+    await user.click(screen.getByRole('button', { name: /Запустить оптимизацию/ }));
     expect(screen.getByText('Требования: Не выбраны')).toBeInTheDocument();
   });
   it('загружает STL, показывает геометрию и удаляет модель', async () => {
@@ -52,11 +52,11 @@ describe('Рабочий экран', () => {
     render(<HomePage />);
     upload(file());
     await screen.findByText('test.stl');
-    expect(screen.getByRole('dialog')).toBeVisible();
+    expect(screen.getByRole('status')).toBeVisible();
     expect(screen.getByText('Модель успешно загружена.')).toBeVisible();
-    await user.click(screen.getByRole('button', { name: 'Продолжить' }));
+    await user.click(screen.getByRole('button', { name: 'Закрыть уведомление' }));
     expect(screen.getByText(/1 граней/)).toBeVisible();
-    await user.click(screen.getByRole('button', { name: /Показать деморезультат/ }));
+    await user.click(screen.getByRole('button', { name: /Запустить оптимизацию/ }));
     expect(screen.getByText(/test.stl · PLA/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Удалить' }));
     expect(screen.getByText('Модель ещё не загружена')).toBeVisible();
@@ -96,5 +96,21 @@ describe('Рабочий экран', () => {
     await screen.findByText('new.stl');
     resolveOld(new TextEncoder().encode(source).buffer);
     await waitFor(() => expect(screen.queryByText('old.stl')).not.toBeInTheDocument());
+  });
+  it('скрывает уведомление автоматически и не блокирует форму', () => {
+    vi.useFakeTimers();
+    try {
+      render(<HomePage />);
+      upload(file('wrong.txt'));
+      expect(screen.getByRole('alert')).toBeVisible();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Максимальная нагрузка, Н')).toBeEnabled();
+      act(() => {
+        vi.advanceTimersByTime(7000);
+      });
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
