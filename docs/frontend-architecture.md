@@ -14,6 +14,7 @@
 | `src/features/model-viewer/stl.ts` | Чтение и проверка ASCII / бинарного STL                                      |
 | `src/features/optimization/hooks`  | Сохранение и сброс параметров запроса                                        |
 | `src/features/optimization/model`  | Тип запроса и фиксированные экспериментальные данные макета                  |
+| `src/static`                       | Исходный логотип из Figma и иконки интерфейса                                |
 | `src/features/optimization/utils`  | Преобразование формы в запрос и координат графика                            |
 
 `BrandLogo` и `PrimaryButton` — небольшие элементы интерфейса; `HomeHeader`, `ModelPanel`, `OptimizationForm` и `OptimizationResults` составляют из них экран. В результатах отдельно выделены `ResultSummary`, `ExperimentChart` и `ExperimentTable`. Это композиция в направлении атомарного подхода, без навязанной всему проекту иерархии atoms/molecules/organisms.

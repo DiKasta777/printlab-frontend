@@ -1,3 +1,5 @@
+import sunUrl from '@/static/icons/sun.svg';
+import moonUrl from '@/static/icons/moon.svg';
 import { PrimaryButton } from './primary-button';
 import { BrandLogo } from './brand-logo';
 import styles from '../styles/home-page.module.css';
@@ -26,7 +28,7 @@ export function HomeHeader(props: HomeHeaderProps) {
           onClick={onToggleTheme}
           aria-label={light ? 'Включить тёмную тему' : 'Включить светлую тему'}
         >
-          {light ? '◐' : '☀'}
+          <img src={light ? moonUrl : sunUrl} alt="" aria-hidden="true" />
         </button>
         <PrimaryButton onClick={onUpload} disabled={loading}>
           ↑ <span>{loading ? 'Чтение STL…' : 'Загрузить модель'}</span>

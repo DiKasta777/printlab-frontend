@@ -63,6 +63,7 @@
 }
 .home-page__logo {
   display: block;
+  object-fit: contain;
   flex-shrink: 0;
   width: calc(80 * var(--u));
   height: calc(84 * var(--u));
@@ -91,6 +92,10 @@
   cursor: wait;
 }
 .home-page__theme {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 1;
   width: calc(42 * var(--u));
   height: calc(42 * var(--u));
   flex-shrink: 0;
@@ -100,6 +105,12 @@
   color: var(--color-text);
   cursor: pointer;
   font-size: 20px;
+}
+.home-page__theme img {
+  display: block;
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
 }
 .home-page__intro,
 .home-page__step,
