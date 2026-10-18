@@ -52,7 +52,9 @@ describe('Рабочий экран', () => {
     render(<HomePage />);
     upload(file());
     await screen.findByText('test.stl');
-    expect(screen.getByRole('status')).toHaveTextContent('успешно');
+    expect(screen.getByRole('dialog')).toBeVisible();
+    expect(screen.getByText('Модель успешно загружена.')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Продолжить' }));
     expect(screen.getByText(/1 граней/)).toBeVisible();
     await user.click(screen.getByRole('button', { name: /Показать деморезультат/ }));
     expect(screen.getByText(/test.stl · PLA/)).toBeInTheDocument();

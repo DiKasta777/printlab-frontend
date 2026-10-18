@@ -1,29 +1,33 @@
 .page {
-  --surface: #192223;
-  --inset: #111a1c;
-  --color-background: #101718;
-  --color-text: #edf2ef;
-  --color-muted: #a5b4b1;
-  --color-border: #344340;
-  --teal: #6ed7c9;
-  --orange: #ff873b;
   --mesh-stroke: #123e3b;
   min-height: 100svh;
   background: var(--color-background);
   color: var(--color-text);
   padding: 0 clamp(1rem, 4vw, 4rem);
   color-scheme: dark;
+  --surface: #464747;
+  --inset: #898b8b;
+  --color-background: #0c0f10;
+  --color-text: #eef2f2;
+  --color-muted: #d2d5d5;
+  --color-border: #7d8585;
+  --teal: #1ccbcc;
+  --orange: #ff7e13;
+  --control-background: #505252;
+  padding-inline: clamp(1rem, 2.1vw, 2.5rem);
+  font-family: Arial, Helvetica, sans-serif;
 }
 .light {
-  --surface: #fff;
-  --inset: #f1f5f3;
-  --color-background: #f6f7f3;
-  --color-text: #1b302c;
-  --color-muted: #536660;
-  --color-border: #ced9d4;
-  --teal: #137568;
   --orange: #ad4800;
   color-scheme: light;
+  --surface: #d9d9d9;
+  --inset: #e6e6e6;
+  --color-background: #fff;
+  --color-text: #111;
+  --color-muted: #333;
+  --color-border: #638484;
+  --teal: #08797b;
+  --control-background: #fff;
 }
 .page * {
   box-sizing: border-box;
@@ -31,46 +35,47 @@
 .header,
 .main,
 .footer {
-  max-width: 1440px;
   margin-inline: auto;
+  max-width: 1800px;
 }
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-block: 1.3rem;
   border-bottom: 1px solid var(--color-border);
+  border: 0;
+  padding-block: 12px;
 }
 .brand {
   display: inline-flex;
-  gap: 0.8rem;
   align-items: center;
   text-decoration: none;
+  gap: 0.7rem;
 }
 .brand strong {
   display: block;
-  font-size: 1.25rem;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.15rem, 1.65vw, 1.8rem);
+  letter-spacing: -0.02em;
 }
 .brand small {
   display: block;
   color: var(--color-muted);
   margin-top: 0.2rem;
-  font-size: 0.7rem;
+  font-size: clamp(0.65rem, 0.95vw, 1rem);
 }
 .logo {
-  display: grid;
   place-content: center;
   position: relative;
-  width: 44px;
-  height: 44px;
-  border: 2px solid var(--orange);
-  border-radius: 12px 12px 12px 3px;
   font-size: 2rem;
   font-weight: 800;
   color: var(--orange);
   line-height: 1;
+  width: 62px;
+  height: 68px;
+  border: 0;
+  border-radius: 0;
+  display: block;
 }
 .logo span {
   position: absolute;
@@ -81,18 +86,18 @@
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.7rem;
 }
 .primary {
-  border: 1px solid #ff9a5c;
-  background: #ff873b;
   color: #241509;
-  padding: 0.8rem 1.2rem;
   min-height: 44px;
-  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.8rem;
   font-weight: 700;
+  background: #ff7e13;
+  border: 2px solid #a44c0b;
+  border-radius: 12px;
+  padding: 0.8rem 1.7rem;
+  font-size: 0.9rem;
 }
 .primary:hover {
   background: #ff9d60;
@@ -110,15 +115,20 @@
   color: var(--color-text);
   font-size: 1.2rem;
   cursor: pointer;
+  border-color: var(--color-border);
 }
 .main {
-  padding-block: 1.8rem 2.5rem;
+  padding-block: 0 1rem;
 }
 .intro {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  position: absolute;
+  right: 0;
+  width: 1px;
+  overflow: hidden;
 }
 .eyebrow,
 .step {
@@ -151,54 +161,56 @@
 }
 .apiNotice {
   color: var(--color-muted);
-  font-size: 0.78rem;
-  line-height: 1.7;
-  margin: 0.8rem 0 1.5rem;
-  max-width: 58rem;
+  margin: 0 0 0.7rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  max-width: none;
 }
 .workspace {
   display: grid;
-  grid-template-columns: 1.08fr 1fr;
+  grid-template-columns: 1.15fr 1fr;
   gap: 1rem;
 }
 .panel {
   background: var(--surface);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
   min-width: 0;
   overflow: hidden;
+  border: 3px solid #1ccbcc;
+  border-radius: 22px;
 }
 .modelPanel {
   border-top: 2px solid var(--teal);
 }
 .parameters {
   border-top: 2px solid var(--orange);
+  border: 3px solid #ff7e13;
 }
 .panelHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  padding: 1.25rem 1.4rem 1rem;
+  padding: 1.2rem 1.4rem 0.9rem;
 }
 .panelHeader h2 {
-  font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.025em;
-  margin: 0.4rem 0 0.3rem;
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
 }
 .panelHeader p {
   color: var(--color-muted);
-  font-size: 0.73rem;
   line-height: 1.6;
   margin: 0;
+  font-size: 0.83rem;
 }
 .viewport {
-  margin: 0 1rem;
   background: var(--inset);
-  border: 1px solid var(--color-border);
-  border-radius: 9px;
   position: relative;
+  margin: 0 1.4rem;
+  border: 1px solid #b3d3d3;
+  border-radius: 14px;
+  min-height: 360px;
 }
 .viewLabel {
   position: absolute;
@@ -222,7 +234,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   align-items: center;
-  padding: 1rem 1.4rem;
+  padding: 0.7rem 1.4rem;
 }
 .modelFooter strong,
 .modelFooter small {
@@ -243,62 +255,63 @@
   font-size: 0.75rem;
 }
 .parameters form {
-  padding: 0.4rem 1.4rem 1rem;
+  padding: 0.2rem 1.4rem 1rem;
 }
 .fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
   align-items: end;
+  gap: 0.8rem 1.3rem;
 }
 .fields > label {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  font-size: 0.72rem;
-  color: var(--color-muted);
+  font-size: 0.82rem;
+  color: var(--color-text);
 }
 .fields select,
 .fields input[type='number'] {
   width: 100%;
   min-width: 0;
-  border: 1px solid var(--color-border);
-  background: var(--inset);
   color: var(--color-text);
-  min-height: 42px;
-  border-radius: 6px;
   padding: 0.55rem 0.65rem;
-  font-size: 0.75rem;
+  background: var(--control-background);
+  border: 1.5px solid var(--color-border);
+  border-radius: 9px;
+  font-size: 0.83rem;
+  min-height: 42px;
 }
 .requirements {
   margin: 0;
   padding: 0;
   border: 0;
-  font-size: 0.68rem;
   min-width: 0;
+  font-size: 0.78rem;
 }
 .requirements legend {
-  color: var(--color-muted);
   margin-bottom: 0.3rem;
-  font-size: 0.72rem;
+  font-size: 0.85rem;
+  color: var(--color-text);
 }
 .requirements label {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
   line-height: 1.6;
+  gap: 0.5rem;
+  padding-block: 0.18rem;
 }
 .requirements input {
   accent-color: var(--teal);
   margin: 0;
-  width: 13px;
-  height: 13px;
+  width: 17px;
+  height: 17px;
 }
 .run {
   display: flex;
   width: 100%;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
   margin-top: 1.3rem;
 }
 .formHint {
@@ -308,39 +321,40 @@
   margin: 0.65rem 0 0;
 }
 .results {
-  margin-top: 1rem;
   border-top: 2px solid var(--teal);
+  margin-top: 1rem;
 }
 .resultGrid {
   display: grid;
-  grid-template-columns: 0.85fr 1fr 1fr;
-  gap: 1.8rem;
   padding: 0.5rem 1.4rem 1.4rem;
+  grid-template-columns: 1fr 1.1fr 1fr;
+  gap: 1.5rem;
+  padding-top: 0.8rem;
 }
 .resultGrid h3 {
-  font-size: 0.73rem;
   font-weight: 600;
-  color: var(--teal);
   margin: 0 0 1rem;
   line-height: 1.6;
+  font-size: 0.85rem;
+  color: #89e5e5;
 }
 .summary h3 {
   color: var(--orange);
 }
 .metrics {
   display: flex;
-  gap: 1.4rem;
   align-items: center;
+  gap: 0.8rem;
 }
 .ring {
-  width: 100px;
-  height: 100px;
   flex-shrink: 0;
   border-radius: 50%;
   background: conic-gradient(var(--orange) 40%, var(--color-border) 0);
   display: grid;
   place-items: center;
   position: relative;
+  width: 90px;
+  height: 90px;
 }
 .ring::before {
   content: '';
@@ -360,12 +374,14 @@
 .metricLabel {
   display: block;
   color: var(--color-muted);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
 }
 .metricValue {
   display: block;
-  font-size: 1.3rem;
   margin: 0.1rem 0 0.45rem;
+  font-size: 1.8rem;
+  margin-top: 0.3rem;
+  white-space: nowrap;
 }
 .metricValue small {
   font-size: 0.8rem;
@@ -373,13 +389,13 @@
 }
 .summary dl {
   margin: 1rem 0 0;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
 }
 .summary dl div {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  padding-block: 0.3rem;
+  padding-block: 0.35rem;
 }
 .summary dt {
   color: var(--color-muted);
@@ -392,8 +408,8 @@
   display: block;
 }
 .chart line {
-  stroke: var(--color-border);
   stroke-width: 1;
+  stroke: #989f9f;
 }
 .chart text {
   fill: var(--color-muted);
@@ -407,38 +423,39 @@
   stroke-width: 2;
 }
 .chart circle {
-  fill: var(--teal);
+  fill: #1ccbcc;
 }
 .chart .selectedPoint {
-  fill: var(--orange);
+  fill: #ff7e13;
+  stroke: #ff7e13;
 }
 .tableWrap table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.65rem;
   text-align: center;
+  font-size: 0.8rem;
 }
 .tableWrap caption {
   text-align: left;
   color: var(--color-muted);
-  font-size: 0.6rem;
   margin-bottom: 0.8rem;
+  font-size: 0.65rem;
 }
 .tableWrap th {
   font-weight: 500;
-  font-size: 0.57rem;
-  color: var(--color-muted);
   line-height: 1.5;
   padding: 0.4rem 0.1rem;
+  font-size: 0.65rem;
+  color: var(--color-text);
 }
 .tableWrap td {
-  padding: 0.65rem 0.2rem;
   border-top: 1px solid var(--color-border);
+  padding: 0.55rem 0.2rem;
 }
 .selectedRow {
-  background: #ff873b;
-  color: #241509;
   font-weight: 700;
+  background: #ff7e13;
+  color: #111;
 }
 .emptyResults {
   display: flex;
@@ -471,9 +488,10 @@
   border-top: 1px solid var(--color-border);
   padding: 1rem 1.4rem;
   color: var(--color-muted);
-  font-size: 0.7rem;
   line-height: 1.6;
   overflow-wrap: anywhere;
+  font-size: 0.7rem;
+  border-color: var(--color-border);
 }
 .submitted summary {
   cursor: pointer;
@@ -620,4 +638,220 @@
     flex-direction: column;
     gap: 0.5rem;
   }
+}
+
+/* Geometry, panels and colours follow the exported Figma frames. */
+.intro h1,
+.eyebrow,
+.step,
+.fileBadge,
+.formHint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.modelPlaceholder {
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+  color: #111;
+  font-size: 1.5rem;
+}
+.modelInfo {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 2;
+  max-width: min(290px, calc(100% - 24px));
+  color: #fff;
+  font-size: 0.85rem;
+}
+.modelInfo summary {
+  background: #464747;
+  border: 2px solid #262626;
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  min-width: 200px;
+  cursor: pointer;
+}
+.modelInfo p {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 0 0 5px 5px;
+  background: #464747;
+  line-height: 1.5;
+}
+.run > span {
+  display: none;
+}
+.light .resultGrid h3 {
+  color: #116365;
+}
+.summary h3,
+.light .summary h3 {
+  color: var(--orange);
+}
+.metricPair {
+  display: flex;
+  gap: 0.75rem;
+}
+.light .chart line {
+  stroke: #686868;
+}
+.chart polyline,
+.chart circle {
+  stroke: #1ccbcc;
+}
+.notification {
+  background: #595959;
+  color: #fff;
+  border: 0;
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  width: min(760px, calc(100% - 2rem));
+  text-align: center;
+  box-shadow: 0 12px 80px #0004;
+}
+.notification::backdrop {
+  background: #000b;
+}
+.notification h2 {
+  font-size: clamp(1.3rem, 3vw, 2.7rem);
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.3;
+}
+.notification p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.notification button {
+  border: 1px solid #ddd;
+  color: #fff;
+  background: #454545;
+  border-radius: 7px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+}
+@media (min-width: 1600px) {
+  .page {
+    padding-top: 0;
+  }
+  .main {
+    padding-block: 0 1rem;
+  }
+  .viewport,
+  .modelPlaceholder {
+    min-height: 440px;
+  }
+  .panelHeader h2 {
+    font-size: 1.45rem;
+  }
+  .fields {
+    gap: 1rem 1.4rem;
+  }
+  .fields select,
+  .fields input[type='number'] {
+    min-height: 48px;
+  }
+  .fields > label {
+    font-size: 0.95rem;
+  }
+  .requirement label {
+    font-size: 0.9rem;
+  }
+  .resultGrid h3 {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 1100px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .resultGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .summary {
+    grid-column: 1 / -1;
+  }
+  .summary dl {
+    max-width: 400px;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    gap: 0.5rem;
+  }
+  .logo {
+    width: 38px;
+    height: 44px;
+  }
+  .brand small {
+    max-width: 135px;
+  }
+  .primary {
+    padding: 0.65rem 0.6rem;
+    font-size: 0.7rem;
+  }
+  .panel {
+    border-radius: 16px;
+  }
+  .panelHeader {
+    padding: 1rem;
+  }
+  .viewport {
+    margin-inline: 1rem;
+  }
+  .viewport,
+  .modelPlaceholder {
+    min-height: 280px;
+  }
+  .parameters form {
+    padding-inline: 1rem;
+  }
+  .fields {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .resultGrid {
+    grid-template-columns: 1fr;
+  }
+  .summary {
+    grid-column: auto;
+  }
+  .metrics {
+    flex-wrap: wrap;
+  }
+  .metricPair {
+    gap: 1rem;
+  }
+  .metricValue {
+    font-size: 1.5rem;
+  }
+  .notification {
+    padding: 1.5rem 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .headerActions .badge {
+    display: none;
+  }
+}
+.success {
+  background: var(--surface);
+  color: var(--color-text);
+}
+.summary h3,
+.textButton {
+  color: #ffb27a;
+}
+.light .summary h3,
+.light .textButton {
+  color: #8c3b00;
+}
+
+.footer {
+  display: none;
 }

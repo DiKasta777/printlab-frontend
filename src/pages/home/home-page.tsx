@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, SyntheticEvent } from 'react';
 import { env } from '@/shared/config/env';
 import { ModelViewer } from '@/features/model-viewer/model-viewer';
-import { EXAMPLE_MODEL, MAX_FILE_SIZE, parseStl } from '@/features/model-viewer/stl';
+import { MAX_FILE_SIZE, parseStl } from '@/features/model-viewer/stl';
 import type { Model } from '@/features/model-viewer/stl';
 import styles from './home-page.module.css';
 
@@ -37,6 +37,12 @@ export function HomePage() {
   const [result, setResult] = useState<Result | null>(null);
   const upload = useRef<HTMLInputElement>(null);
   const requestId = useRef(0);
+  const notification = useRef<HTMLDialogElement>(null);
+  const isUploadNotice = Boolean(error) || message === 'Модель успешно загружена.';
+  useEffect(() => {
+    if (isUploadNotice) notification.current?.showModal();
+    else notification.current?.close();
+  }, [isUploadNotice, error]);
 
   async function readFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -98,15 +104,35 @@ export function HomePage() {
     <div className={[styles.page, light ? styles.light : ''].join(' ')}>
       <header className={styles.header}>
         <a className={styles.brand} href={import.meta.env.BASE_URL}>
-          <span className={styles.logo} aria-hidden="true">
-            P<span>³</span>
-          </span>
+          <svg className={styles.logo} viewBox="0 0 90 100" aria-hidden="true">
+            <defs>
+              <linearGradient id="brand-orange">
+                <stop stopColor="#ec4c1c" />
+                <stop offset="1" stopColor="#ff7d16" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#brand-orange)"
+              d="M28 4h43q12 0 12 12v27H61V25H36v48h18q-8-17 4-24 15-7 24 9l7 19q4 14-12 14H51l8 7H43l-9-9h-7Q4 89 4 67V27Q4 4 28 4Z"
+            />
+            <path d="M67 23v14" stroke="#ff7d16" strokeWidth="7" strokeLinecap="round" />
+            <path
+              d="M27 87v7h12"
+              fill="none"
+              stroke="#f56817"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+            <circle cx="73" cy="69" r="5" fill="white" />
+            <circle cx="74" cy="69" r="2.5" fill="#22c9c8" />
+          </svg>
           <span>
             <strong>Infill Lab</strong>
             <small>Оптимизация параметров 3D-печати</small>
           </span>
         </a>
         <div className={styles.headerActions}>
+          <span className={styles.badge}>Демо интерфейса</span>
           <button
             type="button"
             className={styles.theme}
@@ -136,7 +162,6 @@ export function HomePage() {
               <br className={styles.mobileBreak} /> Больше возможностей.
             </h1>
           </div>
-          <span className={styles.badge}>Демо интерфейса</span>
         </div>
         <p className={styles.apiNotice}>
           Сервер расчётов ещё не подключён. Вы можете просмотреть STL и проверить форму; результаты
@@ -153,11 +178,29 @@ export function HomePage() {
             void readFile(event);
           }}
         />
-        <div role="alert" className={error ? styles.error : styles.silent}>
-          {error}
-        </div>
-        <div role="status" className={message ? styles.success : styles.silent}>
-          {message}
+        <dialog
+          ref={notification}
+          className={styles.notification}
+          aria-labelledby="notification-heading"
+        >
+          <h2 id="notification-heading">
+            {error ? 'Произошла ошибка' : 'Успешная загрузка модели!'}
+          </h2>
+          <p role={error ? 'alert' : 'status'}>{error || (isUploadNotice ? message : '')}</p>
+          <button
+            type="button"
+            autoFocus
+            onClick={() => {
+              notification.current?.close();
+              setError('');
+              setMessage('');
+            }}
+          >
+            Продолжить
+          </button>
+        </dialog>
+        <div role="status" className={message && !isUploadNotice ? styles.success : styles.silent}>
+          {!isUploadNotice && message}
         </div>
         <div className={styles.workspace}>
           <section
@@ -173,10 +216,18 @@ export function HomePage() {
               <span className={styles.fileBadge}>{model ? 'STL' : 'ПРИМЕР'}</span>
             </div>
             <div className={styles.viewport} aria-busy={loading}>
-              <span className={styles.viewLabel}>ПЕРСПЕКТИВА / XYZ</span>
-              <ModelViewer key={fileName} model={model ?? EXAMPLE_MODEL} />
-              {!model && (
-                <p className={styles.exampleLabel}>Пример геометрии · загрузите свою STL-модель</p>
+              <details className={styles.modelInfo}>
+                <summary>Информация…</summary>
+                <p>
+                  {model
+                    ? 'Размеры указаны в единицах STL; единицы измерения в формате не заданы.'
+                    : 'Выберите STL-файл через кнопку «Загрузить модель». Поддерживаются ASCII и бинарные STL до 15 МБ.'}
+                </p>
+              </details>
+              {model ? (
+                <ModelViewer key={fileName} model={model} />
+              ) : (
+                <div className={styles.modelPlaceholder}>МОДЕЛЬ</div>
               )}
             </div>
             <div className={styles.modelFooter}>
@@ -356,15 +407,19 @@ export function HomePage() {
                         40<span>%</span>
                       </strong>
                     </div>
-                    <div>
-                      <span className={styles.metricLabel}>Прочность</span>
-                      <strong className={styles.metricValue}>
-                        215 <small>Н</small>
-                      </strong>
-                      <span className={styles.metricLabel}>Расход материала</span>
-                      <strong className={styles.metricValue}>
-                        28,4 <small>г</small>
-                      </strong>
+                    <div className={styles.metricPair}>
+                      <div>
+                        <span className={styles.metricLabel}>Ожидаемая прочность</span>
+                        <strong className={styles.metricValue}>
+                          215 <small>Н</small>
+                        </strong>
+                      </div>
+                      <div>
+                        <span className={styles.metricLabel}>Расход материала</span>
+                        <strong className={styles.metricValue}>
+                          28,4 <small>г</small>
+                        </strong>
+                      </div>
                     </div>
                   </div>
                   <dl>

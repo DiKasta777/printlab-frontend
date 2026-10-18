@@ -9,7 +9,7 @@ test('production-сборка открывает PrintLab без ошибок Ja
 
   await expect(page).toHaveTitle('PrintLab');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Меньше материала.');
-  await expect(page.getByText('Демо интерфейса')).toBeVisible();
+  await expect(page.getByText(/Сервер расчётов ещё не подключён/)).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
@@ -61,6 +61,7 @@ test('загрузка STL и обработка повреждённого фа
   });
   await expect(page.getByText('triangle.stl', { exact: true })).toBeVisible();
   await expect(page.getByRole('status')).toContainText('успешно');
+  await page.getByRole('button', { name: 'Продолжить' }).click();
   await page.getByRole('button', { name: 'Удалить' }).click();
   await expect(page.getByText('Модель ещё не загружена')).toBeVisible();
   await upload.setInputFiles({
