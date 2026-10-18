@@ -1,23 +1,12 @@
-import { useState } from 'react';
-import type { Model, Point } from './stl';
-import styles from './model-viewer.module.css';
+import type { Model } from './stl';
+import { useModelViewer } from './hooks/use-model-viewer';
+import styles from './styles/model-viewer.module.css';
 
 export function ModelViewer({ model }: { model: Model }) {
-  const [rotation, setRotation] = useState(-0.55);
-  const [zoom, setZoom] = useState(1);
-  const [wireframe, setWireframe] = useState(false);
-  function project([x, y, z]: Point): Point {
-    const rx = x * Math.cos(rotation) - y * Math.sin(rotation);
-    const ry = x * Math.sin(rotation) + y * Math.cos(rotation);
-    return [250 + rx * 220 * zoom, 175 + (ry * 0.48 - z * 0.88) * 220 * zoom, ry + z * 0.5];
-  }
-  const stride = Math.ceil(model.triangles.length / 1500);
-  const faces = model.triangles
-    .filter((_, index) => index % stride === 0)
-    .map((triangle) => triangle.map(project))
-    .sort((a, b) => a.reduce((sum, p) => sum + p[2], 0) - b.reduce((sum, p) => sum + p[2], 0));
+  const { faces, stride, wireframe, rotateLeft, rotateRight, zoomOut, zoomIn, toggleWireframe } =
+    useModelViewer(model);
   return (
-    <div className={styles.viewer}>
+    <div className={styles['model-viewer']}>
       <svg viewBox="0 0 500 350" role="img" aria-label="Предпросмотр геометрии STL-модели">
         <defs>
           <pattern
@@ -36,7 +25,7 @@ export function ModelViewer({ model }: { model: Model }) {
           width="420"
           height="150"
           fill="url(#model-grid)"
-          className={styles.grid}
+          className={styles['model-viewer__grid']}
         />
         {faces.map((face, index) => (
           <polygon
@@ -47,65 +36,37 @@ export function ModelViewer({ model }: { model: Model }) {
             strokeWidth={wireframe ? 0.8 : 0.5}
           />
         ))}
-        <text x="452" y="314" className={styles.axis}>
+        <text x="452" y="314" className={styles['model-viewer__axis']}>
           X
         </text>
-        <text x="80" y="314" className={styles.axis}>
+        <text x="80" y="314" className={styles['model-viewer__axis']}>
           Y
         </text>
-        <text x="250" y="28" className={styles.axis}>
+        <text x="250" y="28" className={styles['model-viewer__axis']}>
           Z
         </text>
       </svg>
-      <div className={styles.controls} aria-label="Управление моделью">
-        <button
-          type="button"
-          onClick={() => {
-            setRotation(rotation - 0.3);
-          }}
-          aria-label="Повернуть влево"
-        >
+      <div className={styles['model-viewer__controls']} aria-label="Управление моделью">
+        <button type="button" onClick={rotateLeft} aria-label="Повернуть влево">
           ↶
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            setRotation(rotation + 0.3);
-          }}
-          aria-label="Повернуть вправо"
-        >
+        <button type="button" onClick={rotateRight} aria-label="Повернуть вправо">
           ↷
         </button>
         <span />
-        <button
-          type="button"
-          onClick={() => {
-            setZoom(Math.max(0.5, zoom - 0.2));
-          }}
-          aria-label="Уменьшить модель"
-        >
+        <button type="button" onClick={zoomOut} aria-label="Уменьшить модель">
           −
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            setZoom(Math.min(1.8, zoom + 0.2));
-          }}
-          aria-label="Увеличить модель"
-        >
+        <button type="button" onClick={zoomIn} aria-label="Увеличить модель">
           +
         </button>
-        <button
-          type="button"
-          aria-pressed={wireframe}
-          onClick={() => {
-            setWireframe(!wireframe);
-          }}
-        >
+        <button type="button" aria-pressed={wireframe} onClick={toggleWireframe}>
           Каркас
         </button>
       </div>
-      {stride > 1 && <p className={styles.hint}>Облегчённый просмотр: показана часть граней.</p>}
+      {stride > 1 && (
+        <p className={styles['model-viewer__hint']}>Облегчённый просмотр: показана часть граней.</p>
+      )}
     </div>
   );
 }
